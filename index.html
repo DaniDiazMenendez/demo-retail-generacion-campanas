@@ -212,6 +212,25 @@
       color: var(--cp-text);
       margin-bottom: 4px;
     }
+    .canvas-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .canvas-tab {
+      border: 1px solid var(--cp-border);
+      background: var(--cp-surface);
+      color: var(--cp-text-muted);
+      border-radius: 999px;
+      padding: 8px 12px;
+    }
+    .canvas-tab.active {
+      border-color: var(--cp-accent);
+      color: var(--cp-accent);
+      font-weight: 800;
+      background: var(--cp-accent-soft);
+    }
     .studio {
       display: grid;
       grid-template-columns: 360px minmax(0, 1fr);
@@ -272,7 +291,7 @@
     .asset.large { grid-column: span 2; }
     .preview-stage {
       display: grid;
-      grid-template-columns: 320px minmax(0, 1fr);
+      grid-template-columns: 360px minmax(0, 1fr);
       gap: 14px;
       align-items: start;
     }
@@ -284,6 +303,100 @@
     }
     .web-preview {
       min-height: 360px;
+    }
+    .creative-wall {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .social-card, .email-card, .avatar-card, .web-card {
+      border: 1px solid var(--cp-border);
+      border-radius: 20px;
+      background: var(--cp-surface);
+      overflow: hidden;
+      box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+    }
+    .creative-image {
+      min-height: 230px;
+      padding: 18px;
+      display: grid;
+      align-content: space-between;
+      background: linear-gradient(135deg, var(--cp-accent-soft), var(--cp-surface-soft));
+      position: relative;
+      overflow: hidden;
+    }
+    .creative-image::after {
+      content: "";
+      width: 180px;
+      height: 180px;
+      border-radius: 999px;
+      border: 1px solid var(--cp-border);
+      background: var(--cp-sheen);
+      position: absolute;
+      right: -42px;
+      bottom: -44px;
+    }
+    .creative-body {
+      padding: 14px;
+      display: grid;
+      gap: 8px;
+    }
+    .avatar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1;
+    }
+    .avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 999px;
+      border: 2px solid var(--cp-surface);
+      background: var(--cp-accent);
+      color: var(--cp-accent-fg);
+      display: grid;
+      place-items: center;
+      font-size: 26px;
+      font-weight: 900;
+    }
+    .avatar.small {
+      width: 40px;
+      height: 40px;
+      font-size: 18px;
+    }
+    .creative-products {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      z-index: 1;
+    }
+    .creative-products .produce {
+      width: 50px;
+      height: 50px;
+      font-size: 24px;
+      box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+    }
+    .headline-xl {
+      font-size: 32px;
+      line-height: 1;
+      margin: 0;
+      z-index: 1;
+    }
+    .persona-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .persona {
+      border: 1px solid var(--cp-border);
+      border-radius: 14px;
+      background: var(--cp-surface-soft);
+      padding: 12px;
+      display: grid;
+      justify-items: center;
+      text-align: center;
+      gap: 8px;
     }
     .channel-title {
       display: flex;
@@ -422,7 +535,7 @@
     }
     .hidden { display: none; }
     @media (max-width: 1100px) {
-      .hero, .studio, .campaign-grid, .preview-stage { grid-template-columns: 1fr; }
+      .hero, .studio, .campaign-grid, .preview-stage, .creative-wall, .persona-grid { grid-template-columns: 1fr; }
       .campaign-visual, .flow { grid-template-columns: 1fr; }
       .metrics { grid-template-columns: 1fr; }
       .asset.wide, .asset.large { grid-column: auto; }
@@ -518,6 +631,11 @@ Restricciones: no prometer resultados de salud; evitar lenguaje exagerado; mante
             <div class="flow-step"><strong>3. Canales</strong>Variantes</div>
             <div class="flow-step"><strong>4. Marca</strong>Control</div>
           </div>
+          <div class="canvas-tabs">
+            <button class="canvas-tab active" data-canvas="duo">Mobile + Web</button>
+            <button class="canvas-tab" data-canvas="social">Social + Avatares</button>
+            <button class="canvas-tab" data-canvas="email">Email + Landing</button>
+          </div>
           <div class="preview-stage" id="campaignOutput"></div>
         </div>
 
@@ -541,41 +659,60 @@ Restricciones: no prometer resultados de salud; evitar lenguaje exagerado; mante
         title: "Generar campaña",
         prompt: "A partir de este brief, generá el concepto central de campaña y tres mensajes clave.",
         mobile: ["Mobile · historia/push", "Semana de ahorro saludable", "20% off en frescos seleccionados. Armá tu carrito saludable en minutos.", "Comprar ahora"],
-        web: ["Web · landing hero", "Comer mejor también puede ser simple", "FrescoMarket acerca frutas, verduras, yogures y snacks saludables con 20% off para planificar tu semana online.", "Ver seleccionados"]
+        web: ["Web · landing hero", "Comer mejor también puede ser simple", "FrescoMarket acerca frutas, verduras, yogures y snacks saludables con 20% off para planificar tu semana online.", "Ver seleccionados"],
+        palette: ["🍓", "🥬", "🥑", "🥛"],
+        avatar: "FM",
+        persona: "Familias urbanas"
       },
       {
         title: "Posteos redes",
         prompt: "Generá 3 posteos para Instagram manteniendo tono cercano y claro.",
         mobile: ["Mobile · Instagram", "Tu carrito más fresco", "Ideas simples para comer mejor empiezan con una compra bien planificada. 20% off esta semana.", "Guardar post"],
-        web: ["Web · social preview", "3 copies listos para redes", "Post 1: Llená tu semana de frescura. Post 2: Comprá saludable sin complicarte. Post 3: Frescos y snacks seleccionados con 20% off.", "Copiar variantes"]
+        web: ["Web · social preview", "3 copies listos para redes", "Post 1: Llená tu semana de frescura. Post 2: Comprá saludable sin complicarte. Post 3: Frescos y snacks seleccionados con 20% off.", "Copiar variantes"],
+        palette: ["🍎", "🥕", "🥗", "🛒"],
+        avatar: "IG",
+        persona: "Comprador digital"
       },
       {
         title: "Email marketing",
         prompt: "Redactá un asunto y preheader de email con foco en conversión, sin exagerar beneficios.",
         mobile: ["Mobile · inbox", "20% off para llenar tu semana de frescura", "Frutas, verduras, yogures y snacks saludables seleccionados en FrescoMarket.", "Abrir email"],
-        web: ["Web · email body", "Tu compra saludable, más fácil", "Esta semana encontrá productos frescos seleccionados con 20% off. Elegí online y recibí en casa.", "Armar carrito"]
+        web: ["Web · email body", "Tu compra saludable, más fácil", "Esta semana encontrá productos frescos seleccionados con 20% off. Elegí online y recibí en casa.", "Armar carrito"],
+        palette: ["✉️", "🍌", "🥛", "🍇"],
+        avatar: "EM",
+        persona: "Cliente recurrente"
       },
       {
         title: "Adaptar por canal",
         prompt: "Adaptá el mensaje para LinkedIn, app push y banner web.",
         mobile: ["Mobile · push app", "20% off saludable", "Armá tu carrito fresco hoy. Seleccionados por tiempo limitado.", "Ir a la app"],
-        web: ["Web · banner", "Semana de ahorro saludable", "20% off en frescos, yogures y snacks seleccionados.", "Comprar online"]
+        web: ["Web · banner", "Semana de ahorro saludable", "20% off en frescos, yogures y snacks seleccionados.", "Comprar online"],
+        palette: ["📱", "🍓", "🥬", "🛍️"],
+        avatar: "CH",
+        persona: "Audiencia omnicanal"
       },
       {
         title: "Revisar marca",
         prompt: "Revisá consistencia de marca: tono, claims, restricciones y claridad.",
         mobile: ["Mobile · aprobación", "Tono aprobado", "Cercano, simple y confiable. Sin promesas de salud ni claims exagerados.", "Enviar a revisión"],
-        web: ["Web · checklist", "Control de marca", "Oferta clara, tono consistente, CTA visible y restricciones respetadas.", "Aprobar borrador"]
+        web: ["Web · checklist", "Control de marca", "Oferta clara, tono consistente, CTA visible y restricciones respetadas.", "Aprobar borrador"],
+        palette: ["✅", "🛡️", "📝", "🎯"],
+        avatar: "BR",
+        persona: "Brand manager"
       },
       {
         title: "Variantes A/B",
         prompt: "Generá variantes A/B para mejorar conversión sin perder identidad de marca.",
         mobile: ["Mobile · test A/B", "A: Ahorrá 20%", "B: Tu compra saludable directo a casa. Probar A para precio y B para conveniencia.", "Lanzar test"],
-        web: ["Web · experimento", "Precio vs conveniencia", "Variante A enfatiza ahorro. Variante B enfatiza experiencia online y entrega.", "Comparar variantes"]
+        web: ["Web · experimento", "Precio vs conveniencia", "Variante A enfatiza ahorro. Variante B enfatiza experiencia online y entrega.", "Comparar variantes"],
+        palette: ["A", "B", "📈", "🧪"],
+        avatar: "AB",
+        persona: "Growth marketing"
       }
     ];
 
     let selectedPrompt = 0;
+    let selectedCanvas = "duo";
 
     const SCRIPT = `1. Presentar el desafío: producir contenido para múltiples canales toma tiempo y genera inconsistencias.
 2. Mostrar el brief de FrescoMarket.
@@ -610,7 +747,9 @@ Restricciones: no prometer resultados de salud; evitar lenguaje exagerado; mante
       const output = PROMPTS[selectedPrompt];
       const [mobileChannel, mobileHeadline, mobileCopy, mobileCta] = output.mobile;
       const [webChannel, webHeadline, webCopy, webCta] = output.web;
-      campaignOutput.innerHTML = `
+      if (selectedCanvas === "duo") {
+        campaignOutput.className = "preview-stage";
+        campaignOutput.innerHTML = `
         <article class="mobile-preview">
           <div class="channel-title">
             <h3>Preview Mobile</h3>
@@ -649,6 +788,64 @@ Restricciones: no prometer resultados de salud; evitar lenguaje exagerado; mante
           <div class="pill-row"><span class="chip">Web</span><span class="chip">Mobile</span><span class="chip">Revisión humana</span></div>
         </article>
       `;
+        return;
+      }
+
+      if (selectedCanvas === "social") {
+        campaignOutput.className = "creative-wall";
+        campaignOutput.innerHTML = `
+          <article class="social-card">
+            <div class="creative-image">
+              <div class="avatar-row"><span class="avatar">${output.avatar}</span><div><strong>FrescoMarket</strong><br><span>${output.persona}</span></div></div>
+              <h2 class="headline-xl">${mobileHeadline}</h2>
+              <div class="creative-products">${output.palette.map(item => `<span class="produce">${item}</span>`).join("")}</div>
+            </div>
+            <div class="creative-body">
+              <strong>${mobileChannel}</strong>
+              <p>${mobileCopy}</p>
+              <button class="primary">${mobileCta}</button>
+            </div>
+          </article>
+          <article class="avatar-card">
+            <div class="creative-body">
+              <h3>Avatares / audiencias sugeridas</h3>
+              <div class="persona-grid">
+                <div class="persona"><span class="avatar small">F</span><strong>Familia</strong><span>Compra semanal</span></div>
+                <div class="persona"><span class="avatar small">D</span><strong>Digital</strong><span>Compra por app</span></div>
+                <div class="persona"><span class="avatar small">G</span><strong>Growth</strong><span>Optimización A/B</span></div>
+              </div>
+              <div class="copy-box"><strong>Copy social</strong><br>${mobileCopy}</div>
+            </div>
+          </article>
+        `;
+        return;
+      }
+
+      campaignOutput.className = "creative-wall";
+      campaignOutput.innerHTML = `
+        <article class="email-card">
+          <div class="creative-body">
+            <h3>Email generado</h3>
+            <div class="email">
+              <strong>${webHeadline}</strong>
+              <span class="chip">${webChannel}</span>
+              <p>${webCopy}</p>
+              <button class="primary">${webCta}</button>
+            </div>
+          </div>
+        </article>
+        <article class="web-card">
+          <div class="creative-image">
+            <span class="pill">${webChannel}</span>
+            <h2 class="headline-xl">${webHeadline}</h2>
+            <div class="creative-products">${output.palette.map(item => `<span class="produce">${item}</span>`).join("")}</div>
+          </div>
+          <div class="creative-body">
+            <p>${webCopy}</p>
+            <button class="primary">${webCta}</button>
+          </div>
+        </article>
+      `;
     }
 
     function renderBrandChecks() {
@@ -672,6 +869,14 @@ Restricciones: no prometer resultados de salud; evitar lenguaje exagerado; mante
           document.getElementById("campaignTab").classList.toggle("hidden", tab.dataset.tab !== "campaign");
           document.getElementById("brandTab").classList.toggle("hidden", tab.dataset.tab !== "brand");
           document.getElementById("scriptTab").classList.toggle("hidden", tab.dataset.tab !== "script");
+        });
+      });
+      document.querySelectorAll(".canvas-tab").forEach(tab => {
+        tab.addEventListener("click", () => {
+          document.querySelectorAll(".canvas-tab").forEach(t => t.classList.remove("active"));
+          tab.classList.add("active");
+          selectedCanvas = tab.dataset.canvas;
+          renderCampaign();
         });
       });
     }

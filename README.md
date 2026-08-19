@@ -15,6 +15,8 @@ Outcome esperado: Aceleración de campañas y consistencia de marca.
 - Variantes por canal: LinkedIn, app push y banner web.
 - Revisión de tono y marca.
 - Guion de demo.
+- Previews grandes para Mobile + Web, Social + Avatares y Email + Landing.
+- Cada prompt actualiza las piezas visuales y los textos de publicación.
 
 ## Nota técnica
 
