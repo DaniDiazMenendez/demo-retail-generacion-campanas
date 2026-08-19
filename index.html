@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo | Generación de contenido y campañas</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23b11f4b'/%3E%3Cpath d='M7 20l12-12v16L7 20zm14-8h4v8h-4z' fill='white'/%3E%3C/svg%3E">
+  <script>
+    (() => {
+      const param = new URLSearchParams(window.location.search).get("scoutTheme");
+      const theme =
+        param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --cp-bg: #f7f4ef;
+      --cp-bg-elevated: #fcfbf8;
+      --cp-surface: #ffffff;
+      --cp-surface-soft: #f5f5f5;
+      --cp-border: #dedede;
+      --cp-border-strong: #919191;
+      --cp-text: #242424;
+      --cp-text-muted: #5c5c5c;
+      --cp-text-soft: #6f6f6f;
+      --cp-accent: #b11f4b;
+      --cp-accent-hover: #9a1a41;
+      --cp-accent-soft: rgba(177, 31, 75, 0.08);
+      --cp-accent-fg: #ffffff;
+      --cp-success: #16a34a;
+      --cp-danger: #dc2626;
+      --cp-warning: #f59e0b;
+      --cp-link: #0078d4;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+      --cp-overlay: rgba(255, 255, 255, 0.8);
+      --cp-panel: rgba(255, 255, 255, 0.86);
+      --cp-panel-strong: rgba(255, 255, 255, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.55);
+      --cp-highlight: rgba(177, 31, 75, 0.12);
+    }
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --cp-bg: #3d3b3a;
+      --cp-bg-elevated: #343231;
+      --cp-surface: #292929;
+      --cp-surface-soft: #2e2e2e;
+      --cp-border: #474747;
+      --cp-border-strong: #5f5f5f;
+      --cp-text: #dedede;
+      --cp-text-muted: #919191;
+      --cp-text-soft: #b0b0b0;
+      --cp-accent: #fd8ea1;
+      --cp-accent-hover: #fb7b91;
+      --cp-accent-soft: rgba(253, 142, 161, 0.14);
+      --cp-accent-fg: #1a1a1a;
+      --cp-success: #4ade80;
+      --cp-danger: #f87171;
+      --cp-warning: #fbbf24;
+      --cp-link: #4da6ff;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+      --cp-overlay: rgba(41, 41, 41, 0.88);
+      --cp-panel: rgba(41, 41, 41, 0.72);
+      --cp-panel-strong: rgba(41, 41, 41, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.04);
+      --cp-highlight: rgba(253, 142, 161, 0.12);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--cp-bg);
+      color: var(--cp-text);
+      font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    button, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 24px;
+      background: var(--cp-bg-elevated);
+      border-bottom: 1px solid var(--cp-border);
+    }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; }
+    .logo {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: var(--cp-accent);
+      color: var(--cp-accent-fg);
+      font-weight: 900;
+    }
+    .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill, .chip {
+      border: 1px solid var(--cp-border);
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: var(--cp-surface);
+      color: var(--cp-text-muted);
+      font-size: 12px;
+    }
+    .shell {
+      width: min(1320px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0;
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    .card {
+      background: var(--cp-surface);
+      border: 1px solid var(--cp-border);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 0 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.14);
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { font-size: clamp(30px, 4vw, 52px); line-height: 1.05; margin-bottom: 14px; }
+    h2 { font-size: 20px; margin-bottom: 12px; }
+    h3 { font-size: 16px; margin-bottom: 8px; }
+    p { color: var(--cp-text-muted); line-height: 1.45; }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .metric {
+      border: 1px solid var(--cp-border);
+      background: var(--cp-surface-soft);
+      border-radius: 12px;
+      padding: 12px;
+    }
+    .metric strong { display: block; font-size: 24px; margin-top: 4px; }
+    .studio {
+      display: grid;
+      grid-template-columns: 360px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+    .brief-panel { display: grid; gap: 12px; }
+    textarea {
+      width: 100%;
+      min-height: 240px;
+      resize: vertical;
+      border: 1px solid var(--cp-border-strong);
+      border-radius: 12px;
+      padding: 12px;
+      background: var(--cp-surface-soft);
+      color: var(--cp-text);
+    }
+    .primary {
+      border: 1px solid var(--cp-accent);
+      background: var(--cp-accent);
+      color: var(--cp-accent-fg);
+      border-radius: 999px;
+      padding: 11px 14px;
+      font-weight: 800;
+    }
+    .secondary {
+      border: 1px solid var(--cp-border);
+      background: var(--cp-surface);
+      color: var(--cp-text);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 13px;
+    }
+    .prompt-list { display: grid; gap: 8px; }
+    .prompt-btn {
+      border: 1px solid var(--cp-border);
+      background: var(--cp-surface);
+      color: var(--cp-text);
+      border-radius: 12px;
+      padding: 10px;
+      text-align: left;
+    }
+    .prompt-btn.active { border-color: var(--cp-accent); background: var(--cp-accent-soft); }
+    .campaign-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .asset {
+      border: 1px solid var(--cp-border);
+      border-radius: 14px;
+      background: var(--cp-surface-soft);
+      padding: 14px;
+      min-height: 150px;
+      line-height: 1.45;
+    }
+    .asset.wide { grid-column: 1 / -1; }
+    .asset-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .score {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--cp-success);
+      font-weight: 800;
+      font-size: 13px;
+    }
+    .brand-check {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .check {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 10px;
+      border: 1px solid var(--cp-border);
+      border-radius: 12px;
+      padding: 10px;
+      background: var(--cp-surface-soft);
+      color: var(--cp-text-muted);
+    }
+    .ok {
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: var(--cp-success);
+      color: var(--cp-accent-fg);
+      font-weight: 900;
+    }
+    .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .tab {
+      border: 1px solid var(--cp-border);
+      background: var(--cp-surface);
+      color: var(--cp-text-muted);
+      border-radius: 999px;
+      padding: 8px 12px;
+    }
+    .tab.active { border-color: var(--cp-accent); color: var(--cp-accent); font-weight: 800; }
+    pre {
+      white-space: pre-wrap;
+      border: 1px solid var(--cp-border);
+      background: var(--cp-surface-soft);
+      border-radius: 12px;
+      padding: 14px;
+      color: var(--cp-text);
+      font-family: Consolas, "Courier New", Courier, monospace;
+      overflow: auto;
+    }
+    .hidden { display: none; }
+    @media (max-width: 1100px) {
+      .hero, .studio, .campaign-grid { grid-template-columns: 1fr; }
+      .metrics { grid-template-columns: 1fr; }
+      .asset.wide { grid-column: auto; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><div class="logo">M</div><span>Retail Campaign Studio</span></div>
+    <div class="pill-row">
+      <span class="pill">Retail y Consumo Masivo</span>
+      <span class="pill">Marketing y contenido</span>
+      <span class="pill">M365 Copilot + Azure OpenAI</span>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <article class="card">
+        <div class="pill-row">
+          <span class="pill">Microsoft 365 Copilot</span>
+          <span class="pill">Azure OpenAI</span>
+          <span class="pill">Control de marca</span>
+        </div>
+        <h1>Generación de contenido y campañas</h1>
+        <p>Demo para CMO / Head de Marketing: convertir un brief en una campaña lista para múltiples canales, manteniendo consistencia de marca y acelerando la producción.</p>
+      </article>
+      <article class="card">
+        <h2>Valor esperado</h2>
+        <div class="metrics">
+          <div class="metric"><span>Tiempo</span><strong>-70%</strong></div>
+          <div class="metric"><span>Canales</span><strong>5</strong></div>
+          <div class="metric"><span>Marca</span><strong>Consistente</strong></div>
+        </div>
+        <p style="margin-top: 14px;">Outcome: acelerar campañas y generar variantes controladas por canal sin perder tono de marca.</p>
+      </article>
+    </section>
+
+    <section class="studio">
+      <aside class="card brief-panel">
+        <h2>Brief de campaña</h2>
+        <textarea id="briefInput">Marca: FrescoMarket
+Campaña: Semana de ahorro saludable
+Objetivo: aumentar ventas online de productos saludables y frescos.
+Audiencia: familias urbanas que compran supermercado online.
+Tono: cercano, simple, optimista y confiable.
+Oferta: 20% off en frutas, verduras, yogures y snacks saludables.
+Canales: Instagram, LinkedIn, email, app push y banner web.
+Restricciones: no prometer resultados de salud; evitar lenguaje exagerado; mantener consistencia de marca.</textarea>
+        <button class="primary" id="generateBtn">Generar campaña</button>
+        <div>
+          <h3>Prompts de demo</h3>
+          <div class="prompt-list" id="promptList"></div>
+        </div>
+      </aside>
+
+      <section class="card">
+        <div class="tabs">
+          <button class="tab active" data-tab="campaign">Campaña generada</button>
+          <button class="tab" data-tab="brand">Control de marca</button>
+          <button class="tab" data-tab="script">Guion</button>
+        </div>
+
+        <div id="campaignTab">
+          <div class="campaign-grid" id="campaignOutput"></div>
+        </div>
+
+        <div id="brandTab" class="hidden">
+          <h2>Revisión de tono y marca</h2>
+          <p>Validación de consistencia antes de publicar o llevar a revisión humana.</p>
+          <div class="brand-check" id="brandChecks"></div>
+        </div>
+
+        <div id="scriptTab" class="hidden">
+          <h2>Guion de demo</h2>
+          <pre id="scriptOutput"></pre>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const PROMPTS = [
+      "A partir de este brief, generá el concepto central de campaña y tres mensajes clave.",
+      "Generá 3 posteos para Instagram manteniendo tono cercano y claro.",
+      "Redactá un asunto y preheader de email con foco en conversión, sin exagerar beneficios.",
+      "Adaptá el mensaje para LinkedIn, app push y banner web.",
+      "Revisá consistencia de marca: tono, claims, restricciones y claridad.",
+      "Generá variantes A/B para mejorar conversión sin perder identidad de marca."
+    ];
+
+    const OUTPUT = {
+      concept: {
+        title: "Concepto de campaña",
+        body: "<strong>Semana de ahorro saludable</strong><br>Comer mejor también puede ser simple. FrescoMarket acerca productos frescos y saludables con 20% off para planificar compras familiares online de manera práctica y confiable."
+      },
+      instagram: {
+        title: "3 posteos para Instagram",
+        body: "1. Esta semana llená tu carrito de frescura: frutas, verduras, yogures y snacks saludables con 20% off.<br><br>2. Ideas simples para comer mejor en casa empiezan con una compra bien planificada.<br><br>3. Tu compra saludable, más fácil: elegí online y recibí en casa."
+      },
+      email: {
+        title: "Email",
+        body: "<strong>Asunto:</strong> 20% off para llenar tu semana de frescura<br><strong>Preheader:</strong> Frutas, verduras, yogures y snacks saludables seleccionados en FrescoMarket."
+      },
+      variants: {
+        title: "Variantes por canal",
+        body: "<strong>LinkedIn:</strong> FrescoMarket impulsa una experiencia de compra online más simple para familias que buscan opciones frescas y saludables.<br><br><strong>Push app:</strong> 20% off saludable esta semana. Armá tu carrito fresco hoy.<br><br><strong>Banner web:</strong> Semana de ahorro saludable · 20% off en seleccionados."
+      },
+      ab: {
+        title: "Variantes A/B",
+        body: "<strong>A:</strong> Ahorrá 20% en frescos y saludables esta semana.<br><strong>B:</strong> Tu compra saludable con 20% off, directo a tu casa.<br><br><span class='score'>✓ Recomendación:</span> Probar A para precio y B para conveniencia."
+      }
+    };
+
+    const SCRIPT = `1. Presentar el desafío: producir contenido para múltiples canales toma tiempo y genera inconsistencias.
+2. Mostrar el brief de FrescoMarket.
+3. Ejecutar el prompt de campaña para generar concepto y mensajes clave.
+4. Mostrar variantes por canal: Instagram, email, LinkedIn, push y banner.
+5. Revisar tono de marca y restricciones: no claims de salud exagerados, tono claro y confiable.
+6. Cerrar con valor: más velocidad, consistencia y control antes de publicar.`;
+
+    const promptList = document.getElementById("promptList");
+    const campaignOutput = document.getElementById("campaignOutput");
+    const brandChecks = document.getElementById("brandChecks");
+    const scriptOutput = document.getElementById("scriptOutput");
+
+    function renderPrompts() {
+      promptList.innerHTML = PROMPTS.map((prompt, index) => `
+        <button class="prompt-btn ${index === 0 ? "active" : ""}" data-index="${index}">
+          <strong>Prompt ${index + 1}</strong><br>${prompt}
+        </button>
+      `).join("");
+      promptList.querySelectorAll("button").forEach(btn => {
+        btn.addEventListener("click", () => {
+          promptList.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+        });
+      });
+    }
+
+    function renderCampaign() {
+      campaignOutput.innerHTML = Object.values(OUTPUT).map((asset, index) => `
+        <article class="asset ${index === 0 ? "wide" : ""}">
+          <div class="asset-header">
+            <h3>${asset.title}</h3>
+            <span class="score">✓ listo</span>
+          </div>
+          <p>${asset.body}</p>
+          <div class="pill-row"><span class="chip">Copilot draft</span><span class="chip">Revisión humana</span></div>
+        </article>
+      `).join("");
+    }
+
+    function renderBrandChecks() {
+      const checks = [
+        ["Tono de marca", "Cercano, simple, optimista y confiable."],
+        ["Claims", "No promete resultados de salud ni beneficios médicos."],
+        ["Consistencia", "Mismo concepto adaptado por canal sin perder identidad."],
+        ["Conversión", "Incluye oferta clara y llamada a acción."],
+        ["Gobernanza", "Contenido listo para revisión del equipo de marketing."]
+      ];
+      brandChecks.innerHTML = checks.map(([title, text]) => `
+        <div class="check"><span class="ok">✓</span><span><strong>${title}</strong><br>${text}</span></div>
+      `).join("");
+    }
+
+    function initTabs() {
+      document.querySelectorAll(".tab").forEach(tab => {
+        tab.addEventListener("click", () => {
+          document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+          tab.classList.add("active");
+          document.getElementById("campaignTab").classList.toggle("hidden", tab.dataset.tab !== "campaign");
+          document.getElementById("brandTab").classList.toggle("hidden", tab.dataset.tab !== "brand");
+          document.getElementById("scriptTab").classList.toggle("hidden", tab.dataset.tab !== "script");
+        });
+      });
+    }
+
+    document.getElementById("generateBtn").addEventListener("click", () => {
+      renderCampaign();
+      renderBrandChecks();
+      scriptOutput.textContent = SCRIPT;
+      document.querySelector('[data-tab="campaign"]').click();
+    });
+
+    renderPrompts();
+    renderCampaign();
+    renderBrandChecks();
+    scriptOutput.textContent = SCRIPT;
+    initTabs();
+  </script>
+</body>
+</html>
