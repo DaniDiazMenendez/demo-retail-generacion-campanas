@@ -257,7 +257,7 @@
     .prompt-btn.active { border-color: var(--cp-accent); background: var(--cp-accent-soft); }
     .campaign-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: 320px minmax(0, 1fr);
       gap: 12px;
     }
     .asset {
@@ -270,6 +270,28 @@
     }
     .asset.wide { grid-column: 1 / -1; }
     .asset.large { grid-column: span 2; }
+    .preview-stage {
+      display: grid;
+      grid-template-columns: 320px minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+    }
+    .mobile-preview, .web-preview {
+      border: 1px solid var(--cp-border);
+      border-radius: 18px;
+      background: var(--cp-surface-soft);
+      padding: 16px;
+    }
+    .web-preview {
+      min-height: 360px;
+    }
+    .channel-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
     .asset-header {
       display: flex;
       justify-content: space-between;
@@ -303,7 +325,7 @@
       padding: 12px;
     }
     .phone {
-      width: min(220px, 100%);
+      width: min(260px, 100%);
       margin: 0 auto;
       border: 1px solid var(--cp-border-strong);
       border-radius: 24px;
@@ -315,7 +337,7 @@
       border: 1px solid var(--cp-border);
       background: var(--cp-surface-soft);
       padding: 12px;
-      min-height: 230px;
+      min-height: 360px;
       display: grid;
       align-content: space-between;
     }
@@ -328,7 +350,7 @@
       gap: 10px;
     }
     .banner {
-      min-height: 160px;
+      min-height: 230px;
       border: 1px solid var(--cp-border);
       border-radius: 14px;
       background: linear-gradient(90deg, var(--cp-accent-soft), var(--cp-surface));
@@ -345,6 +367,14 @@
       height: 10px;
       border-radius: 999px;
       background: var(--cp-accent-soft);
+    }
+    .copy-box {
+      border: 1px solid var(--cp-border);
+      border-radius: 12px;
+      padding: 12px;
+      background: var(--cp-surface);
+      margin-top: 10px;
+      line-height: 1.45;
     }
     .brand-check {
       display: grid;
@@ -392,7 +422,7 @@
     }
     .hidden { display: none; }
     @media (max-width: 1100px) {
-      .hero, .studio, .campaign-grid { grid-template-columns: 1fr; }
+      .hero, .studio, .campaign-grid, .preview-stage { grid-template-columns: 1fr; }
       .campaign-visual, .flow { grid-template-columns: 1fr; }
       .metrics { grid-template-columns: 1fr; }
       .asset.wide, .asset.large { grid-column: auto; }
@@ -488,7 +518,7 @@ Restricciones: no prometer resultados de salud; evitar lenguaje exagerado; mante
             <div class="flow-step"><strong>3. Canales</strong>Variantes</div>
             <div class="flow-step"><strong>4. Marca</strong>Control</div>
           </div>
-          <div class="campaign-grid" id="campaignOutput"></div>
+          <div class="preview-stage" id="campaignOutput"></div>
         </div>
 
         <div id="brandTab" class="hidden">
@@ -507,36 +537,45 @@ Restricciones: no prometer resultados de salud; evitar lenguaje exagerado; mante
 
   <script>
     const PROMPTS = [
-      "A partir de este brief, generá el concepto central de campaña y tres mensajes clave.",
-      "Generá 3 posteos para Instagram manteniendo tono cercano y claro.",
-      "Redactá un asunto y preheader de email con foco en conversión, sin exagerar beneficios.",
-      "Adaptá el mensaje para LinkedIn, app push y banner web.",
-      "Revisá consistencia de marca: tono, claims, restricciones y claridad.",
-      "Generá variantes A/B para mejorar conversión sin perder identidad de marca."
+      {
+        title: "Generar campaña",
+        prompt: "A partir de este brief, generá el concepto central de campaña y tres mensajes clave.",
+        mobile: ["Mobile · historia/push", "Semana de ahorro saludable", "20% off en frescos seleccionados. Armá tu carrito saludable en minutos.", "Comprar ahora"],
+        web: ["Web · landing hero", "Comer mejor también puede ser simple", "FrescoMarket acerca frutas, verduras, yogures y snacks saludables con 20% off para planificar tu semana online.", "Ver seleccionados"]
+      },
+      {
+        title: "Posteos redes",
+        prompt: "Generá 3 posteos para Instagram manteniendo tono cercano y claro.",
+        mobile: ["Mobile · Instagram", "Tu carrito más fresco", "Ideas simples para comer mejor empiezan con una compra bien planificada. 20% off esta semana.", "Guardar post"],
+        web: ["Web · social preview", "3 copies listos para redes", "Post 1: Llená tu semana de frescura. Post 2: Comprá saludable sin complicarte. Post 3: Frescos y snacks seleccionados con 20% off.", "Copiar variantes"]
+      },
+      {
+        title: "Email marketing",
+        prompt: "Redactá un asunto y preheader de email con foco en conversión, sin exagerar beneficios.",
+        mobile: ["Mobile · inbox", "20% off para llenar tu semana de frescura", "Frutas, verduras, yogures y snacks saludables seleccionados en FrescoMarket.", "Abrir email"],
+        web: ["Web · email body", "Tu compra saludable, más fácil", "Esta semana encontrá productos frescos seleccionados con 20% off. Elegí online y recibí en casa.", "Armar carrito"]
+      },
+      {
+        title: "Adaptar por canal",
+        prompt: "Adaptá el mensaje para LinkedIn, app push y banner web.",
+        mobile: ["Mobile · push app", "20% off saludable", "Armá tu carrito fresco hoy. Seleccionados por tiempo limitado.", "Ir a la app"],
+        web: ["Web · banner", "Semana de ahorro saludable", "20% off en frescos, yogures y snacks seleccionados.", "Comprar online"]
+      },
+      {
+        title: "Revisar marca",
+        prompt: "Revisá consistencia de marca: tono, claims, restricciones y claridad.",
+        mobile: ["Mobile · aprobación", "Tono aprobado", "Cercano, simple y confiable. Sin promesas de salud ni claims exagerados.", "Enviar a revisión"],
+        web: ["Web · checklist", "Control de marca", "Oferta clara, tono consistente, CTA visible y restricciones respetadas.", "Aprobar borrador"]
+      },
+      {
+        title: "Variantes A/B",
+        prompt: "Generá variantes A/B para mejorar conversión sin perder identidad de marca.",
+        mobile: ["Mobile · test A/B", "A: Ahorrá 20%", "B: Tu compra saludable directo a casa. Probar A para precio y B para conveniencia.", "Lanzar test"],
+        web: ["Web · experimento", "Precio vs conveniencia", "Variante A enfatiza ahorro. Variante B enfatiza experiencia online y entrega.", "Comparar variantes"]
+      }
     ];
 
-    const OUTPUT = {
-      concept: {
-        title: "Concepto de campaña",
-        body: "<strong>Semana de ahorro saludable</strong><br>Comer mejor también puede ser simple. FrescoMarket acerca productos frescos y saludables con 20% off para planificar compras familiares online de manera práctica y confiable."
-      },
-      instagram: {
-        title: "3 posteos para Instagram",
-        body: "1. Esta semana llená tu carrito de frescura: frutas, verduras, yogures y snacks saludables con 20% off.<br><br>2. Ideas simples para comer mejor en casa empiezan con una compra bien planificada.<br><br>3. Tu compra saludable, más fácil: elegí online y recibí en casa."
-      },
-      email: {
-        title: "Email",
-        body: "<strong>Asunto:</strong> 20% off para llenar tu semana de frescura<br><strong>Preheader:</strong> Frutas, verduras, yogures y snacks saludables seleccionados en FrescoMarket."
-      },
-      variants: {
-        title: "Variantes por canal",
-        body: "<strong>LinkedIn:</strong> FrescoMarket impulsa una experiencia de compra online más simple para familias que buscan opciones frescas y saludables.<br><br><strong>Push app:</strong> 20% off saludable esta semana. Armá tu carrito fresco hoy.<br><br><strong>Banner web:</strong> Semana de ahorro saludable · 20% off en seleccionados."
-      },
-      ab: {
-        title: "Variantes A/B",
-        body: "<strong>A:</strong> Ahorrá 20% en frescos y saludables esta semana.<br><strong>B:</strong> Tu compra saludable con 20% off, directo a tu casa.<br><br><span class='score'>✓ Recomendación:</span> Probar A para precio y B para conveniencia."
-      }
-    };
+    let selectedPrompt = 0;
 
     const SCRIPT = `1. Presentar el desafío: producir contenido para múltiples canales toma tiempo y genera inconsistencias.
 2. Mostrar el brief de FrescoMarket.
@@ -553,102 +592,61 @@ Restricciones: no prometer resultados de salud; evitar lenguaje exagerado; mante
     function renderPrompts() {
       promptList.innerHTML = PROMPTS.map((prompt, index) => `
         <button class="prompt-btn ${index === 0 ? "active" : ""}" data-index="${index}">
-          <strong>Prompt ${index + 1}</strong><br>${prompt}
+          <strong>${prompt.title}</strong><br>${prompt.prompt}
         </button>
       `).join("");
       promptList.querySelectorAll("button").forEach(btn => {
         btn.addEventListener("click", () => {
+          selectedPrompt = Number(btn.dataset.index);
           promptList.querySelectorAll("button").forEach(b => b.classList.remove("active"));
           btn.classList.add("active");
+          renderCampaign();
+          document.querySelector('[data-tab="campaign"]').click();
         });
       });
     }
 
     function renderCampaign() {
+      const output = PROMPTS[selectedPrompt];
+      const [mobileChannel, mobileHeadline, mobileCopy, mobileCta] = output.mobile;
+      const [webChannel, webHeadline, webCopy, webCta] = output.web;
       campaignOutput.innerHTML = `
-        <article class="asset wide">
-          <div class="asset-header">
-            <h3>${OUTPUT.concept.title}</h3>
-            <span class="score">✓ listo</span>
-          </div>
-          <p>${OUTPUT.concept.body}</p>
-          <div class="preview">
-            <div class="preview-visual">
-              <span class="pill">Concepto rector</span>
-              <h2>Comer mejor también puede ser simple</h2>
-              <div class="produce-row"><span class="produce">🥬</span><span class="produce">🍓</span><span class="produce">🥑</span></div>
-            </div>
-          </div>
-          <div class="pill-row"><span class="chip">Copilot draft</span><span class="chip">Revisión humana</span></div>
-        </article>
-
-        <article class="asset">
-          <div class="asset-header">
-            <h3>Instagram</h3>
-            <span class="score">✓ 3 posteos</span>
+        <article class="mobile-preview">
+          <div class="channel-title">
+            <h3>Preview Mobile</h3>
+            <span class="score">✓ generado</span>
           </div>
           <div class="phone">
             <div class="phone-screen">
               <div>
-                <span class="pill">FrescoMarket</span>
-                <h3>20% off saludable</h3>
-                <p>Frutas, verduras, yogures y snacks seleccionados.</p>
+                <span class="pill">${mobileChannel}</span>
+                <h2>${mobileHeadline}</h2>
+                <p>${mobileCopy}</p>
               </div>
-              <div class="produce-row"><span class="produce">🍎</span><span class="produce">🥛</span><span class="produce">🥕</span></div>
+              <div class="produce-row"><span class="produce">🍓</span><span class="produce">🥬</span><span class="produce">🥑</span></div>
+              <button class="primary">${mobileCta}</button>
             </div>
           </div>
-          <p>${OUTPUT.instagram.body}</p>
-          <div class="pill-row"><span class="chip">Copilot draft</span><span class="chip">Revisión humana</span></div>
+          <div class="copy-box"><strong>Prompt usado</strong><br>${output.prompt}</div>
         </article>
 
-        <article class="asset">
-          <div class="asset-header">
-            <h3>Email</h3>
-            <span class="score">✓ asunto + preheader</span>
-          </div>
-          <div class="email">
-            <strong>20% off para llenar tu semana de frescura</strong>
-            <span class="chip">Preheader: productos saludables seleccionados</span>
-            <div class="mini-lines">
-              <div class="mini-line" style="width: 90%;"></div>
-              <div class="mini-line" style="width: 74%;"></div>
-              <div class="mini-line" style="width: 62%;"></div>
-            </div>
-          </div>
-          <p>${OUTPUT.email.body}</p>
-          <div class="pill-row"><span class="chip">Email marketing</span><span class="chip">Conversión</span></div>
-        </article>
-
-        <article class="asset large">
-          <div class="asset-header">
-            <h3>Banner web + App push</h3>
-            <span class="score">✓ multicanal</span>
+        <article class="web-preview">
+          <div class="channel-title">
+            <h3>Preview Web</h3>
+            <span class="score">✓ generado</span>
           </div>
           <div class="banner">
-            <span class="pill">Semana de ahorro saludable</span>
-            <h2>20% off en frescos seleccionados</h2>
-            <p>Armá tu carrito online y recibí en casa.</p>
+            <span class="pill">${webChannel}</span>
+            <h2>${webHeadline}</h2>
+            <p>${webCopy}</p>
+            <div class="produce-row"><span class="produce">🍎</span><span class="produce">🥛</span><span class="produce">🥕</span><span class="produce">🍌</span></div>
           </div>
-          <p>${OUTPUT.variants.body}</p>
-          <div class="pill-row"><span class="chip">Web</span><span class="chip">App</span><span class="chip">LinkedIn</span></div>
-        </article>
-
-        <article class="asset">
-          <div class="asset-header">
-            <h3>Test A/B</h3>
-            <span class="score">✓ recomendado</span>
+          <div class="copy-box">
+            <strong>${webHeadline}</strong>
+            <p>${webCopy}</p>
+            <button class="primary">${webCta}</button>
           </div>
-          <p>${OUTPUT.ab.body}</p>
-          <div class="preview">
-            <div class="preview-body">
-              <strong>A: precio</strong>
-              <div class="mini-lines"><div class="mini-line" style="width: 84%;"></div><div class="mini-line" style="width: 56%;"></div></div>
-              <br>
-              <strong>B: conveniencia</strong>
-              <div class="mini-lines"><div class="mini-line" style="width: 72%;"></div><div class="mini-line" style="width: 68%;"></div></div>
-            </div>
-          </div>
-          <div class="pill-row"><span class="chip">Optimización</span><span class="chip">Canal digital</span></div>
+          <div class="pill-row"><span class="chip">Web</span><span class="chip">Mobile</span><span class="chip">Revisión humana</span></div>
         </article>
       `;
     }
