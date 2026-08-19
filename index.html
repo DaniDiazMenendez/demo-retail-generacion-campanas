@@ -142,6 +142,76 @@
       padding: 12px;
     }
     .metric strong { display: block; font-size: 24px; margin-top: 4px; }
+    .campaign-visual {
+      min-height: 260px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      align-items: stretch;
+    }
+    .hero-poster {
+      border: 1px solid var(--cp-border);
+      border-radius: 18px;
+      padding: 18px;
+      background: linear-gradient(135deg, var(--cp-accent-soft), var(--cp-surface-soft));
+      display: grid;
+      align-content: space-between;
+      min-height: 240px;
+      overflow: hidden;
+    }
+    .hero-poster h2 {
+      font-size: 30px;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .visual-stack {
+      display: grid;
+      gap: 12px;
+    }
+    .visual-tile {
+      border: 1px solid var(--cp-border);
+      border-radius: 16px;
+      padding: 14px;
+      background: var(--cp-surface-soft);
+      min-height: 110px;
+      display: grid;
+      align-content: center;
+    }
+    .produce-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .produce {
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: var(--cp-surface);
+      border: 1px solid var(--cp-border);
+      font-size: 22px;
+    }
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .flow-step {
+      border: 1px solid var(--cp-border);
+      border-radius: 14px;
+      background: var(--cp-surface);
+      padding: 12px;
+      text-align: center;
+      color: var(--cp-text-muted);
+    }
+    .flow-step strong {
+      display: block;
+      color: var(--cp-text);
+      margin-bottom: 4px;
+    }
     .studio {
       display: grid;
       grid-template-columns: 360px minmax(0, 1fr);
@@ -187,7 +257,7 @@
     .prompt-btn.active { border-color: var(--cp-accent); background: var(--cp-accent-soft); }
     .campaign-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 12px;
     }
     .asset {
@@ -199,6 +269,7 @@
       line-height: 1.45;
     }
     .asset.wide { grid-column: 1 / -1; }
+    .asset.large { grid-column: span 2; }
     .asset-header {
       display: flex;
       justify-content: space-between;
@@ -213,6 +284,67 @@
       color: var(--cp-success);
       font-weight: 800;
       font-size: 13px;
+    }
+    .preview {
+      border: 1px solid var(--cp-border);
+      border-radius: 16px;
+      background: var(--cp-surface);
+      overflow: hidden;
+      margin-top: 10px;
+    }
+    .preview-visual {
+      min-height: 150px;
+      background: linear-gradient(135deg, var(--cp-accent-soft), var(--cp-surface-soft));
+      padding: 18px;
+      display: grid;
+      align-content: center;
+    }
+    .preview-body {
+      padding: 12px;
+    }
+    .phone {
+      width: min(220px, 100%);
+      margin: 0 auto;
+      border: 1px solid var(--cp-border-strong);
+      border-radius: 24px;
+      background: var(--cp-surface);
+      padding: 12px;
+    }
+    .phone-screen {
+      border-radius: 18px;
+      border: 1px solid var(--cp-border);
+      background: var(--cp-surface-soft);
+      padding: 12px;
+      min-height: 230px;
+      display: grid;
+      align-content: space-between;
+    }
+    .email {
+      border: 1px solid var(--cp-border);
+      border-radius: 12px;
+      background: var(--cp-surface);
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+    .banner {
+      min-height: 160px;
+      border: 1px solid var(--cp-border);
+      border-radius: 14px;
+      background: linear-gradient(90deg, var(--cp-accent-soft), var(--cp-surface));
+      padding: 18px;
+      display: grid;
+      align-content: center;
+    }
+    .mini-lines {
+      display: grid;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .mini-line {
+      height: 10px;
+      border-radius: 999px;
+      background: var(--cp-accent-soft);
     }
     .brand-check {
       display: grid;
@@ -261,8 +393,9 @@
     .hidden { display: none; }
     @media (max-width: 1100px) {
       .hero, .studio, .campaign-grid { grid-template-columns: 1fr; }
+      .campaign-visual, .flow { grid-template-columns: 1fr; }
       .metrics { grid-template-columns: 1fr; }
-      .asset.wide { grid-column: auto; }
+      .asset.wide, .asset.large { grid-column: auto; }
     }
   </style>
 </head>
@@ -298,6 +431,31 @@
       </article>
     </section>
 
+    <section class="card">
+      <div class="campaign-visual">
+        <div class="hero-poster">
+          <div>
+            <span class="pill">FrescoMarket</span>
+            <h2>Semana de ahorro saludable</h2>
+            <p>20% off en frescos, yogures y snacks saludables para llenar la semana de energía.</p>
+          </div>
+          <div class="produce-row">
+            <span class="produce">🍓</span><span class="produce">🥬</span><span class="produce">🥑</span><span class="produce">🥛</span><span class="produce">🍎</span>
+          </div>
+        </div>
+        <div class="visual-stack">
+          <div class="visual-tile">
+            <h3>Idea creativa</h3>
+            <p>“Comer mejor también puede ser simple.”</p>
+          </div>
+          <div class="visual-tile">
+            <h3>Activación multicanal</h3>
+            <p>Instagram · Email · LinkedIn · Push app · Banner web</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="studio">
       <aside class="card brief-panel">
         <h2>Brief de campaña</h2>
@@ -324,6 +482,12 @@ Restricciones: no prometer resultados de salud; evitar lenguaje exagerado; mante
         </div>
 
         <div id="campaignTab">
+          <div class="flow">
+            <div class="flow-step"><strong>1. Brief</strong>Objetivo y tono</div>
+            <div class="flow-step"><strong>2. Concepto</strong>Idea central</div>
+            <div class="flow-step"><strong>3. Canales</strong>Variantes</div>
+            <div class="flow-step"><strong>4. Marca</strong>Control</div>
+          </div>
           <div class="campaign-grid" id="campaignOutput"></div>
         </div>
 
@@ -401,16 +565,92 @@ Restricciones: no prometer resultados de salud; evitar lenguaje exagerado; mante
     }
 
     function renderCampaign() {
-      campaignOutput.innerHTML = Object.values(OUTPUT).map((asset, index) => `
-        <article class="asset ${index === 0 ? "wide" : ""}">
+      campaignOutput.innerHTML = `
+        <article class="asset wide">
           <div class="asset-header">
-            <h3>${asset.title}</h3>
+            <h3>${OUTPUT.concept.title}</h3>
             <span class="score">✓ listo</span>
           </div>
-          <p>${asset.body}</p>
+          <p>${OUTPUT.concept.body}</p>
+          <div class="preview">
+            <div class="preview-visual">
+              <span class="pill">Concepto rector</span>
+              <h2>Comer mejor también puede ser simple</h2>
+              <div class="produce-row"><span class="produce">🥬</span><span class="produce">🍓</span><span class="produce">🥑</span></div>
+            </div>
+          </div>
           <div class="pill-row"><span class="chip">Copilot draft</span><span class="chip">Revisión humana</span></div>
         </article>
-      `).join("");
+
+        <article class="asset">
+          <div class="asset-header">
+            <h3>Instagram</h3>
+            <span class="score">✓ 3 posteos</span>
+          </div>
+          <div class="phone">
+            <div class="phone-screen">
+              <div>
+                <span class="pill">FrescoMarket</span>
+                <h3>20% off saludable</h3>
+                <p>Frutas, verduras, yogures y snacks seleccionados.</p>
+              </div>
+              <div class="produce-row"><span class="produce">🍎</span><span class="produce">🥛</span><span class="produce">🥕</span></div>
+            </div>
+          </div>
+          <p>${OUTPUT.instagram.body}</p>
+          <div class="pill-row"><span class="chip">Copilot draft</span><span class="chip">Revisión humana</span></div>
+        </article>
+
+        <article class="asset">
+          <div class="asset-header">
+            <h3>Email</h3>
+            <span class="score">✓ asunto + preheader</span>
+          </div>
+          <div class="email">
+            <strong>20% off para llenar tu semana de frescura</strong>
+            <span class="chip">Preheader: productos saludables seleccionados</span>
+            <div class="mini-lines">
+              <div class="mini-line" style="width: 90%;"></div>
+              <div class="mini-line" style="width: 74%;"></div>
+              <div class="mini-line" style="width: 62%;"></div>
+            </div>
+          </div>
+          <p>${OUTPUT.email.body}</p>
+          <div class="pill-row"><span class="chip">Email marketing</span><span class="chip">Conversión</span></div>
+        </article>
+
+        <article class="asset large">
+          <div class="asset-header">
+            <h3>Banner web + App push</h3>
+            <span class="score">✓ multicanal</span>
+          </div>
+          <div class="banner">
+            <span class="pill">Semana de ahorro saludable</span>
+            <h2>20% off en frescos seleccionados</h2>
+            <p>Armá tu carrito online y recibí en casa.</p>
+          </div>
+          <p>${OUTPUT.variants.body}</p>
+          <div class="pill-row"><span class="chip">Web</span><span class="chip">App</span><span class="chip">LinkedIn</span></div>
+        </article>
+
+        <article class="asset">
+          <div class="asset-header">
+            <h3>Test A/B</h3>
+            <span class="score">✓ recomendado</span>
+          </div>
+          <p>${OUTPUT.ab.body}</p>
+          <div class="preview">
+            <div class="preview-body">
+              <strong>A: precio</strong>
+              <div class="mini-lines"><div class="mini-line" style="width: 84%;"></div><div class="mini-line" style="width: 56%;"></div></div>
+              <br>
+              <strong>B: conveniencia</strong>
+              <div class="mini-lines"><div class="mini-line" style="width: 72%;"></div><div class="mini-line" style="width: 68%;"></div></div>
+            </div>
+          </div>
+          <div class="pill-row"><span class="chip">Optimización</span><span class="chip">Canal digital</span></div>
+        </article>
+      `;
     }
 
     function renderBrandChecks() {
