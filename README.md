@@ -17,6 +17,8 @@ Outcome esperado: Aceleración de campañas y consistencia de marca.
 - Guion de demo.
 - Previews grandes para Mobile + Web, Social + Avatares y Email + Landing.
 - Cada prompt actualiza las piezas visuales y los textos de publicación.
+- Controles interactivos de audiencia, tono y oferta.
+- Estado de campaña con aprobación y calendario de publicación.
 
 ## Nota técnica
 

@@ -256,6 +256,65 @@
       padding: 11px 14px;
       font-weight: 800;
     }
+    .control-section {
+      border: 1px solid var(--cp-border);
+      border-radius: 14px;
+      background: var(--cp-surface-soft);
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+    .control-group {
+      display: grid;
+      gap: 8px;
+    }
+    .control-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .control-btn {
+      border: 1px solid var(--cp-border);
+      background: var(--cp-surface);
+      color: var(--cp-text);
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 13px;
+    }
+    .control-btn.active {
+      border-color: var(--cp-accent);
+      background: var(--cp-accent);
+      color: var(--cp-accent-fg);
+      font-weight: 800;
+    }
+    .status-panel {
+      display: grid;
+      gap: 8px;
+      border: 1px solid var(--cp-border);
+      border-radius: 14px;
+      background: var(--cp-surface);
+      padding: 12px;
+    }
+    .status-track {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .status-step {
+      border: 1px solid var(--cp-border);
+      border-radius: 12px;
+      padding: 8px;
+      background: var(--cp-surface-soft);
+      color: var(--cp-text-muted);
+      text-align: center;
+      font-size: 12px;
+    }
+    .status-step.done {
+      border-color: var(--cp-success);
+      color: var(--cp-text);
+      background: var(--cp-highlight);
+      font-weight: 800;
+    }
     .secondary {
       border: 1px solid var(--cp-border);
       background: var(--cp-surface);
@@ -489,6 +548,42 @@
       margin-top: 10px;
       line-height: 1.45;
     }
+    .sparkle-strip {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .sparkle {
+      display: inline-grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      background: var(--cp-accent-soft);
+      border: 1px solid var(--cp-border);
+    }
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .calendar-day {
+      border: 1px solid var(--cp-border);
+      border-radius: 12px;
+      background: var(--cp-surface-soft);
+      padding: 10px;
+      min-height: 84px;
+      font-size: 12px;
+      color: var(--cp-text-muted);
+    }
+    .calendar-day.active {
+      border-color: var(--cp-accent);
+      background: var(--cp-accent-soft);
+      color: var(--cp-text);
+      font-weight: 700;
+    }
     .brand-check {
       display: grid;
       gap: 10px;
@@ -535,7 +630,7 @@
     }
     .hidden { display: none; }
     @media (max-width: 1100px) {
-      .hero, .studio, .campaign-grid, .preview-stage, .creative-wall, .persona-grid { grid-template-columns: 1fr; }
+      .hero, .studio, .campaign-grid, .preview-stage, .creative-wall, .persona-grid, .calendar, .status-track { grid-template-columns: 1fr; }
       .campaign-visual, .flow { grid-template-columns: 1fr; }
       .metrics { grid-template-columns: 1fr; }
       .asset.wide, .asset.large { grid-column: auto; }
@@ -611,6 +706,41 @@ Oferta: 20% off en frutas, verduras, yogures y snacks saludables.
 Canales: Instagram, LinkedIn, email, app push y banner web.
 Restricciones: no prometer resultados de salud; evitar lenguaje exagerado; mantener consistencia de marca.</textarea>
         <button class="primary" id="generateBtn">Generar campaña</button>
+        <div class="control-section">
+          <div class="control-group">
+            <strong>Audiencia</strong>
+            <div class="control-buttons" id="audienceControls">
+              <button class="control-btn active" data-value="familias">Familias</button>
+              <button class="control-btn" data-value="jovenes">Jóvenes</button>
+              <button class="control-btn" data-value="premium">Premium</button>
+            </div>
+          </div>
+          <div class="control-group">
+            <strong>Tono</strong>
+            <div class="control-buttons" id="toneControls">
+              <button class="control-btn active" data-value="cercano">Cercano</button>
+              <button class="control-btn" data-value="urgente">Urgente</button>
+              <button class="control-btn" data-value="inspiracional">Inspiracional</button>
+            </div>
+          </div>
+          <div class="control-group">
+            <strong>Oferta</strong>
+            <div class="control-buttons" id="offerControls">
+              <button class="control-btn active" data-value="20% off">20% off</button>
+              <button class="control-btn" data-value="2x1">2x1</button>
+              <button class="control-btn" data-value="envio gratis">Envío gratis</button>
+            </div>
+          </div>
+        </div>
+        <div class="status-panel">
+          <strong>Estado de campaña</strong>
+          <div class="status-track">
+            <div class="status-step done" id="stepGenerated">Generada</div>
+            <div class="status-step" id="stepReviewed">Revisión marca</div>
+            <div class="status-step" id="stepScheduled">Programada</div>
+          </div>
+          <button class="secondary" id="approveBtn">Aprobar y programar</button>
+        </div>
         <div>
           <h3>Prompts de demo</h3>
           <div class="prompt-list" id="promptList"></div>
@@ -713,6 +843,23 @@ Restricciones: no prometer resultados de salud; evitar lenguaje exagerado; mante
 
     let selectedPrompt = 0;
     let selectedCanvas = "duo";
+    const controls = {
+      audience: "familias",
+      tone: "cercano",
+      offer: "20% off",
+      approved: false
+    };
+
+    const AUDIENCE_VARIANTS = {
+      familias: { label: "familias urbanas", products: ["🍓", "🥬", "🥑", "🥛"], avatar: "FA", phrase: "para planificar la semana en casa" },
+      jovenes: { label: "jóvenes digitales", products: ["🥤", "🥗", "🍌", "📱"], avatar: "JD", phrase: "para resolver la compra desde la app" },
+      premium: { label: "clientes premium", products: ["🍇", "🧀", "🥑", "✨"], avatar: "PR", phrase: "con una selección fresca y cuidada" }
+    };
+    const TONE_VARIANTS = {
+      cercano: "simple, cercano y confiable",
+      urgente: "directo, dinámico y con sentido de oportunidad",
+      inspiracional: "aspiracional, positivo y enfocado en bienestar cotidiano"
+    };
 
     const SCRIPT = `1. Presentar el desafío: producir contenido para múltiples canales toma tiempo y genera inconsistencias.
 2. Mostrar el brief de FrescoMarket.
@@ -745,8 +892,15 @@ Restricciones: no prometer resultados de salud; evitar lenguaje exagerado; mante
 
     function renderCampaign() {
       const output = PROMPTS[selectedPrompt];
+      const audience = AUDIENCE_VARIANTS[controls.audience];
+      const tone = TONE_VARIANTS[controls.tone];
       const [mobileChannel, mobileHeadline, mobileCopy, mobileCta] = output.mobile;
       const [webChannel, webHeadline, webCopy, webCta] = output.web;
+      const offer = controls.offer;
+      const finalMobileHeadline = mobileHeadline.replace("20%", offer).replace("20% off", offer);
+      const finalWebHeadline = webHeadline.replace("20%", offer).replace("20% off", offer);
+      const finalMobileCopy = `${mobileCopy.replace("20% off", offer)} ${audience.phrase}. Tono: ${tone}.`;
+      const finalWebCopy = `${webCopy.replace("20% off", offer)} Pensado para ${audience.label}.`;
       if (selectedCanvas === "duo") {
         campaignOutput.className = "preview-stage";
         campaignOutput.innerHTML = `
@@ -759,10 +913,10 @@ Restricciones: no prometer resultados de salud; evitar lenguaje exagerado; mante
             <div class="phone-screen">
               <div>
                 <span class="pill">${mobileChannel}</span>
-                <h2>${mobileHeadline}</h2>
-                <p>${mobileCopy}</p>
+                <h2>${finalMobileHeadline}</h2>
+                <p>${finalMobileCopy}</p>
               </div>
-              <div class="produce-row"><span class="produce">🍓</span><span class="produce">🥬</span><span class="produce">🥑</span></div>
+              <div class="produce-row">${audience.products.slice(0,3).map(item => `<span class="produce">${item}</span>`).join("")}</div>
               <button class="primary">${mobileCta}</button>
             </div>
           </div>
@@ -776,13 +930,13 @@ Restricciones: no prometer resultados de salud; evitar lenguaje exagerado; mante
           </div>
           <div class="banner">
             <span class="pill">${webChannel}</span>
-            <h2>${webHeadline}</h2>
-            <p>${webCopy}</p>
-            <div class="produce-row"><span class="produce">🍎</span><span class="produce">🥛</span><span class="produce">🥕</span><span class="produce">🍌</span></div>
+            <h2>${finalWebHeadline}</h2>
+            <p>${finalWebCopy}</p>
+            <div class="produce-row">${audience.products.map(item => `<span class="produce">${item}</span>`).join("")}</div>
           </div>
           <div class="copy-box">
-            <strong>${webHeadline}</strong>
-            <p>${webCopy}</p>
+            <strong>${finalWebHeadline}</strong>
+            <p>${finalWebCopy}</p>
             <button class="primary">${webCta}</button>
           </div>
           <div class="pill-row"><span class="chip">Web</span><span class="chip">Mobile</span><span class="chip">Revisión humana</span></div>
@@ -797,12 +951,12 @@ Restricciones: no prometer resultados de salud; evitar lenguaje exagerado; mante
           <article class="social-card">
             <div class="creative-image">
               <div class="avatar-row"><span class="avatar">${output.avatar}</span><div><strong>FrescoMarket</strong><br><span>${output.persona}</span></div></div>
-              <h2 class="headline-xl">${mobileHeadline}</h2>
-              <div class="creative-products">${output.palette.map(item => `<span class="produce">${item}</span>`).join("")}</div>
+              <h2 class="headline-xl">${finalMobileHeadline}</h2>
+              <div class="creative-products">${audience.products.map(item => `<span class="produce">${item}</span>`).join("")}</div>
             </div>
             <div class="creative-body">
               <strong>${mobileChannel}</strong>
-              <p>${mobileCopy}</p>
+              <p>${finalMobileCopy}</p>
               <button class="primary">${mobileCta}</button>
             </div>
           </article>
@@ -810,11 +964,11 @@ Restricciones: no prometer resultados de salud; evitar lenguaje exagerado; mante
             <div class="creative-body">
               <h3>Avatares / audiencias sugeridas</h3>
               <div class="persona-grid">
-                <div class="persona"><span class="avatar small">F</span><strong>Familia</strong><span>Compra semanal</span></div>
-                <div class="persona"><span class="avatar small">D</span><strong>Digital</strong><span>Compra por app</span></div>
-                <div class="persona"><span class="avatar small">G</span><strong>Growth</strong><span>Optimización A/B</span></div>
+                <div class="persona"><span class="avatar small">${audience.avatar}</span><strong>${audience.label}</strong><span>${audience.phrase}</span></div>
+                <div class="persona"><span class="avatar small">🎯</span><strong>Tono</strong><span>${tone}</span></div>
+                <div class="persona"><span class="avatar small">%</span><strong>Oferta</strong><span>${offer}</span></div>
               </div>
-              <div class="copy-box"><strong>Copy social</strong><br>${mobileCopy}</div>
+              <div class="copy-box"><strong>Copy social</strong><br>${finalMobileCopy}</div>
             </div>
           </article>
         `;
@@ -827,9 +981,9 @@ Restricciones: no prometer resultados de salud; evitar lenguaje exagerado; mante
           <div class="creative-body">
             <h3>Email generado</h3>
             <div class="email">
-              <strong>${webHeadline}</strong>
+              <strong>${finalWebHeadline}</strong>
               <span class="chip">${webChannel}</span>
-              <p>${webCopy}</p>
+              <p>${finalWebCopy}</p>
               <button class="primary">${webCta}</button>
             </div>
           </div>
@@ -837,11 +991,11 @@ Restricciones: no prometer resultados de salud; evitar lenguaje exagerado; mante
         <article class="web-card">
           <div class="creative-image">
             <span class="pill">${webChannel}</span>
-            <h2 class="headline-xl">${webHeadline}</h2>
-            <div class="creative-products">${output.palette.map(item => `<span class="produce">${item}</span>`).join("")}</div>
+            <h2 class="headline-xl">${finalWebHeadline}</h2>
+            <div class="creative-products">${audience.products.map(item => `<span class="produce">${item}</span>`).join("")}</div>
           </div>
           <div class="creative-body">
-            <p>${webCopy}</p>
+            <p>${finalWebCopy}</p>
             <button class="primary">${webCta}</button>
           </div>
         </article>
@@ -858,7 +1012,21 @@ Restricciones: no prometer resultados de salud; evitar lenguaje exagerado; mante
       ];
       brandChecks.innerHTML = checks.map(([title, text]) => `
         <div class="check"><span class="ok">✓</span><span><strong>${title}</strong><br>${text}</span></div>
-      `).join("");
+      `).join("") + `
+        <div class="calendar">
+          <div class="calendar-day active"><strong>Lun</strong><br>Instagram<br>${controls.offer}</div>
+          <div class="calendar-day active"><strong>Mar</strong><br>Email<br>${controls.audience}</div>
+          <div class="calendar-day"><strong>Mié</strong><br>LinkedIn</div>
+          <div class="calendar-day active"><strong>Jue</strong><br>Push app</div>
+          <div class="calendar-day"><strong>Vie</strong><br>Reporte A/B</div>
+        </div>
+      `;
+    }
+
+    function renderStatus() {
+      document.getElementById("stepReviewed").classList.toggle("done", controls.approved);
+      document.getElementById("stepScheduled").classList.toggle("done", controls.approved);
+      document.getElementById("approveBtn").textContent = controls.approved ? "Campaña aprobada y programada" : "Aprobar y programar";
     }
 
     function initTabs() {
@@ -879,18 +1047,44 @@ Restricciones: no prometer resultados de salud; evitar lenguaje exagerado; mante
           renderCampaign();
         });
       });
+      setupControlGroup("audienceControls", "audience");
+      setupControlGroup("toneControls", "tone");
+      setupControlGroup("offerControls", "offer");
+    }
+
+    function setupControlGroup(id, key) {
+      document.querySelectorAll(`#${id} .control-btn`).forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(`#${id} .control-btn`).forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          controls[key] = btn.dataset.value;
+          controls.approved = false;
+          renderCampaign();
+          renderBrandChecks();
+          renderStatus();
+        });
+      });
     }
 
     document.getElementById("generateBtn").addEventListener("click", () => {
+      controls.approved = false;
       renderCampaign();
       renderBrandChecks();
+      renderStatus();
       scriptOutput.textContent = SCRIPT;
       document.querySelector('[data-tab="campaign"]').click();
+    });
+    document.getElementById("approveBtn").addEventListener("click", () => {
+      controls.approved = true;
+      renderStatus();
+      renderBrandChecks();
+      document.querySelector('[data-tab="brand"]').click();
     });
 
     renderPrompts();
     renderCampaign();
     renderBrandChecks();
+    renderStatus();
     scriptOutput.textContent = SCRIPT;
     initTabs();
   </script>
